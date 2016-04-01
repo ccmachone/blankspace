@@ -15,26 +15,30 @@ abstract class Model {
     }
     public function save()
     {
+        $this->callMethod("model_persist_pre_hook");
+
         $stmt = "";
         $ref = new \ReflectionClass($this);
         $table = strtolower($ref->getName());
         $properties = $ref->getProperties();
-        $mode = "";
+        $property_names = array();
+        foreach ($properties as $property) {
+            if (substr($property->name, 0, 1) != "_" && $property->name != "id") {
+                $property_names[] = $property->name;
+            }
+        }
 
         if ($this->getPersisted()) {
             $mode = "update";
             $stmt = "UPDATE $table SET ";
             $values = array();
             $i = 0;
-            foreach ($properties as $property) {
+            foreach ($property_names as $property_name) {
                 $i++;
-                $property_name = $property->name;
-                if ($property_name != "id" && substr($property_name, 0, 1) != "_") {
-                    $comma = $i < count($properties) ? ", " : " ";
-                    $stmt .= $property_name . " = ?" . $comma;
-                    $getter = "get" . ucfirst($property_name);
-                    $values[] = array($property_name = $this->$getter());
-                }
+                $comma = $i < count($property_names) ? ", " : " ";
+                $stmt .= $property_name . " = ?" . $comma;
+                $getter = "get" . ucfirst($property_name);
+                $values[] = array($property_name = $this->$getter());
             }
             $stmt .= "WHERE id = ?;";
             $values[] = array('id' => $this->getId());
@@ -44,26 +48,24 @@ abstract class Model {
             $stmt_values = "(";
             $values = array();
             $i = 0;
-            foreach ($properties as $property) {
+            foreach ($property_names as $property_name) {
                 $i++;
-                $property_name = $property->name;
-                if ($property_name != "id" && substr($property_name, 0, 1) != "_") {
-                    $comma = $i < count($properties) ? ", " : ") ";
-                    $stmt .= $property_name . $comma;
-                    $stmt_values .= "?" . $comma;
-                    $getter = "get" . ucfirst($property_name);
-                    $values[] = array($property_name = $this->$getter());
-                }
+                $comma = $i < count($property_names) ? ", " : ") ";
+                $stmt .= $property_name . $comma;
+                $stmt_values .= "?" . $comma;
+                $getter = "get" . ucfirst($property_name);
+                $values[] = array($property_name = $this->$getter());
             }
             $stmt .= "VALUES " . $stmt_values . ";";
         }
-
 
         $result = $this->execute($stmt, $values);
         if (is_numeric($result) && $mode == "create") {
             $this->setId($result);
             $this->setPersisted(true);
         }
+
+        $this->callMethod("model_persist_post_hook");
     }
 
     public function delete()
@@ -89,7 +91,6 @@ abstract class Model {
                 }
             }
             $result = $q->execute();
-            var_dump($result);
         } catch (\PDOException $e) {
             //TODO: log it...
             throw $e;
@@ -112,5 +113,27 @@ abstract class Model {
             }
         }
         $this->setPersisted(true);
+    }
+
+    private function callMethod($method)
+    {
+        if (method_exists($this, $method)) {
+            $this->$method();
+        }
+    }
+
+    public function toArray()
+    {
+        $ref = new \ReflectionClass($this);
+        $properties = $ref->getProperties();
+        $array = array();
+        foreach ($properties as $property) {
+            $property_name = $property->name;
+            if (substr($property_name, 0, 1) != "_") {
+                $getter = "get" . ucfirst($property_name);
+                $array[$property_name] = $this->$getter();
+            }
+        }
+        return $array;
     }
 }

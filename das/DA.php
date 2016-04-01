@@ -15,7 +15,18 @@ abstract class DA {
         var_dump($values);
         $result = $this->execute($stmt, $values);
         $model = $this->hydrate_result($result);
-        var_dump($model);
+        return $model;
+    }
+
+    public function getAll()
+    {
+        $stmt = "";
+        $ref = new \ReflectionClass($this);
+        $table = strtolower(str_replace("_DA", "", $ref->getName()));
+        $stmt .= "SELECT * FROM " . $table . ";";
+        $result = $this->execute($stmt, array());
+        $models = $this->hydrate_result($result);
+        return $models;
     }
 
     private function execute($stmt, $values)

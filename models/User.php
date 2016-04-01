@@ -4,6 +4,7 @@ class User extends \Model {
     private $first_name;
     private $last_name;
     private $email;
+    private $_required_attributes = array("first_name", "last_name", "email");
 
     /**
      * @return mixed
@@ -67,6 +68,34 @@ class User extends \Model {
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequiredAttributes()
+    {
+        return $this->_required_attributes;
+    }
+
+    /**
+     * @param array $required_attributes
+     */
+    public function setRequiredAttributes($required_attributes)
+    {
+        $this->_required_attributes = $required_attributes;
+    }
+
+
+
+    protected function model_persist_pre_hook()
+    {
+        echo "In the user pre hook";
+    }
+
+    protected function model_persist_post_hook()
+    {
+        echo "In the user post hook";
     }
 
 
