@@ -2,6 +2,6 @@
 /composer.phar
 /composer.lock
 /.vagrant
-
+.idea
 
 
