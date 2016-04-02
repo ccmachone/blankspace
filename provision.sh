@@ -23,6 +23,7 @@ sudo adduser remote
 cd /BlankSpace
 cat blankspace.sql | mysql -u root -proot
 
+sudo apt-get install openssl
 
 
 

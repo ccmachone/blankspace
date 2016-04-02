@@ -10,8 +10,10 @@ class Follow_HANDLER extends \Handler {
             $da_name = $class . "_DA";
             $da = new $da_name();
 
-            if (isset($params['user_id'])) {
+            if (isset($params['user_id']) && !isset($params['following_id'])) {
                 $models = $da->getByUserId($params['user_id']);
+            } elseif (isset($params['following_id']) && !isset($params['user_id'])) {
+                $models = $da->getByFollowingID($params['following_id']);
             } else {
                 $models = $da->getAll();
             }

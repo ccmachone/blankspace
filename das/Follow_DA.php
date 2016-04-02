@@ -30,4 +30,18 @@ class Follow_DA extends \DA {
         $models = $this->hydrate_result($result);
         return $models;
     }
+
+    public function getByFollowingId($following_id)
+    {
+        $stmt = "";
+        $ref = new \ReflectionClass($this);
+        $table = strtolower(str_replace("_DA", "", $ref->getName()));
+        $stmt .= "SELECT * FROM " . $table . " WHERE following_id = ?;";
+        $values = array();
+        $values[] = array("following_id" => $following_id);
+
+        $result = $this->execute($stmt, $values);
+        $models = $this->hydrate_result($result);
+        return $models;
+    }
 }

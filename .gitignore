@@ -3,5 +3,5 @@
 /composer.lock
 /.vagrant
 .idea
-
+private.ini
 

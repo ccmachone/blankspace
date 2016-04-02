@@ -1,7 +1,6 @@
 <?php
 abstract class Model {
 
-    private static $root_dir = "/BlankSpace";
     private $persisted = false;
 
     public function getPersisted()
@@ -81,7 +80,7 @@ abstract class Model {
 
     private function execute($stmt, $values)
     {
-        $ini = parse_ini_file(self::$root_dir . "/conf.ini", true);
+        $ini = getProjectIni();
         try {
             $dbh = new \PDO('mysql:host=' . $ini['database']['server'] . ";dbname=" . $ini['database']['name'], $ini['database']['username'], $ini['database']['password']);
             $q = $dbh->prepare($stmt);

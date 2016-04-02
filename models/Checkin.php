@@ -5,6 +5,7 @@ class Checkin extends \Model {
     private $latitude;
     private $longitude;
     private $map_url;
+    private $address;
     protected $_required_attributes = array("user_id", "latitude", "longitude");
 
     /**
@@ -85,6 +86,40 @@ class Checkin extends \Model {
     public function setMap_url($map_url)
     {
         $this->map_url = $map_url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param mixed $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    protected function model_persist_pre_hook()
+    {
+        $geocoder = new \Geocoder();
+        if ($this->getMap_url() == null) {
+            $map_url = $geocoder->getMapUrlAtLatitudeLongitude($this->getLatitude(), $this->getLongitude());
+            $this->setMap_url($map_url);
+        }
+        if ($this->getAddress() == null) {
+            $address = $geocoder->getAddressAtLatitudeLongitude($this->getLatitude(), $this->getLongitude());
+            $this->setAddress($address);
+        }
+    }
+
+    protected function model_persist_post_hook()
+    {
+        //TODO: send an email
     }
 
 
