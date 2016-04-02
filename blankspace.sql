@@ -7,7 +7,7 @@
 #
 # Host: 192.168.20.10 (MySQL 5.5.47-0ubuntu0.14.04.1)
 # Database: blankspace
-# Generation Time: 2016-04-02 18:03:43 +0000
+# Generation Time: 2016-04-02 21:13:48 +0000
 # ************************************************************
 
 
@@ -31,6 +31,7 @@ CREATE TABLE `checkin` (
   `latitude` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `longitude` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `map_url` text COLLATE utf8_unicode_ci,
+  `address` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -48,6 +49,26 @@ CREATE TABLE `follow` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`following_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+# Dump of table geocode_log
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `geocode_log`;
+
+CREATE TABLE `geocode_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `latitude` text,
+  `longitude` text,
+  `address` text,
+  `request` text,
+  `response` text,
+  `geocoder` varchar(255) DEFAULT NULL,
+  `source_ip` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
