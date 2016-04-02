@@ -71,16 +71,6 @@ class User extends \Model {
     }
 
 
-    protected function model_persist_pre_hook()
-    {
-        echo "In the user pre hook";
-    }
-
-    protected function model_persist_post_hook()
-    {
-        echo "In the user post hook";
-    }
-
     public function getFollowers()
     {
         $follow_da = new \Follow_DA();
