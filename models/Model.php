@@ -136,4 +136,20 @@ abstract class Model {
         }
         return $array;
     }
+
+    /**
+     * @return array
+     */
+    public function getRequiredAttributes()
+    {
+        return $this->_required_attributes;
+    }
+
+    /**
+     * @param array $required_attributes
+     */
+    public function setRequiredAttributes($required_attributes)
+    {
+        $this->_required_attributes = $required_attributes;
+    }
 }

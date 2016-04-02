@@ -7,7 +7,7 @@
 #
 # Host: 192.168.20.10 (MySQL 5.5.47-0ubuntu0.14.04.1)
 # Database: blankspace
-# Generation Time: 2016-04-01 16:18:32 +0000
+# Generation Time: 2016-04-02 18:03:43 +0000
 # ************************************************************
 
 
@@ -45,7 +45,8 @@ CREATE TABLE `follow` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
   `following_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`following_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -60,7 +61,8 @@ CREATE TABLE `user` (
   `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

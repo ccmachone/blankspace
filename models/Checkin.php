@@ -5,6 +5,7 @@ class Checkin extends \Model {
     private $latitude;
     private $longitude;
     private $map_url;
+    protected $_required_attributes = array("user_id", "latitude", "longitude");
 
     /**
      * @return mixed

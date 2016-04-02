@@ -1,5 +1,5 @@
 <?php
-class User_HANDLER extends \Handler {
+class Follow_HANDLER extends \Handler {
     public function handleGet($params)
     {
         if (isset($params['id'])) {
@@ -10,8 +10,8 @@ class User_HANDLER extends \Handler {
             $da_name = $class . "_DA";
             $da = new $da_name();
 
-            if (isset($params['email'])) {
-                $models = array($da->getByEmail($params['email']));
+            if (isset($params['user_id'])) {
+                $models = $da->getByUserId($params['user_id']);
             } else {
                 $models = $da->getAll();
             }
@@ -43,15 +43,14 @@ class User_HANDLER extends \Handler {
             }
         }
         if (count($errors) == 0) {
-            $existing_obj = $da->getByEmail($params['email']);
+            $existing_obj = $da->getByUserIdFollowingId($params['user_id'], $params['following_id']);
             if ($existing_obj->getPersisted()) {
-                $errors[] = "Account with specified email already exists!";
+                $errors[] = "Follow already exists!";
             } else {
                 $obj->save();
                 return array($obj->toArray());
             }
-        } 
+        }
         return array("errors" => $errors);
-
     }
 }

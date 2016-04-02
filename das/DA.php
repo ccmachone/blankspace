@@ -11,8 +11,6 @@ abstract class DA {
         $values = array();
         $values[] = array("id" => $id);
 
-        var_dump($stmt);
-        var_dump($values);
         $result = $this->execute($stmt, $values);
         $model = $this->hydrate_result($result);
         return $model;
@@ -29,7 +27,7 @@ abstract class DA {
         return $models;
     }
 
-    private function execute($stmt, $values)
+    protected function execute($stmt, $values)
     {
         $ini = parse_ini_file(self::$root_dir . "/conf.ini", true);
         try {
@@ -41,7 +39,6 @@ abstract class DA {
                 }
             }
             $result = $q->execute();
-            var_dump($result);
         } catch (\PDOException $e) {
             //TODO: log it...
             throw $e;
@@ -49,7 +46,7 @@ abstract class DA {
         return $q;
     }
 
-    private function hydrate_result($result)
+    protected function hydrate_result($result)
     {
         $ref = new \ReflectionClass($this);
         $class = ucfirst(strtolower(str_replace("_DA", "", $ref->getName())));
@@ -59,7 +56,9 @@ abstract class DA {
             $obj->hydrateFromArray($values);
             $models[] = $obj;
         }
-        if (count($models) == 1) {
+        if (count($models) == 0) {
+            return new $class();
+        } elseif (count($models) == 1) {
             return $models[0];
         } else {
             return $models;

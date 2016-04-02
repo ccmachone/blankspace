@@ -13,3 +13,5 @@ include_once("das/Follow_DA.php");
 include_once("das/Checkin_DA.php");
 
 include_once("handlers/User_HANDLER.php");
+include_once("handlers/Follow_HANDLER.php");
+include_once("handlers/Checkin_HANDLER.php");

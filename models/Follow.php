@@ -3,6 +3,7 @@ class Follow extends \Model {
     private $id;
     private $user_id;
     private $following_id;
+    protected $_required_attributes = array("user_id", "following_id");
 
     /**
      * @return mixed

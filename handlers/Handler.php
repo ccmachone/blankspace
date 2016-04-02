@@ -44,6 +44,5 @@ abstract class Handler {
         } else {
             return array("errors" => $errors);
         }
-
     }
 }
