@@ -81,5 +81,17 @@ class User extends \Model {
         echo "In the user post hook";
     }
 
+    public function getFollowers()
+    {
+        $follow_da = new \Follow_DA();
+        $user_da = new \User_DA();
+        $follows = $follow_da->getByFollowingId($this->getId());
+        $followers = array();
+        foreach ($follows as $follow) {
+            $followers[] = $user_da->getById($follow->getUser_id());
+        }
+        return $followers;
+    }
+
 
 }

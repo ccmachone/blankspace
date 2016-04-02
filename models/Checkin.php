@@ -122,6 +122,14 @@ class Checkin extends \Model {
         //TODO: send an email
     }
 
+    public function getMailBody(\User $checkin_user)
+    {
+        $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in to " . $this->getAddress() . "!\n";
+        $message .= "Don't know where that is?  Find out here: " . $this->getMap_url() . "\n";
+        $message .= "Thanks for using BlankSpace!";
+        return $message;
+    }
+
 
 
 }
