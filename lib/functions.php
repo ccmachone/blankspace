@@ -23,3 +23,8 @@ function send_headers($type = null)
             break;
     }
 }
+
+function valid_phone($phone)
+{
+    return strlen($phone) == 10 && is_numeric($phone) && $phone > 0;
+}

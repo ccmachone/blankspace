@@ -7,7 +7,7 @@
 #
 # Host: 192.168.20.10 (MySQL 5.5.47-0ubuntu0.14.04.1)
 # Database: blankspace
-# Generation Time: 2016-04-05 02:40:26 +0000
+# Generation Time: 2016-04-05 02:56:00 +0000
 # ************************************************************
 
 
@@ -99,8 +99,10 @@ CREATE TABLE `user` (
   `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `phone1` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `phone1` (`phone1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

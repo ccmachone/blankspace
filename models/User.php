@@ -4,7 +4,8 @@ class User extends \Model {
     private $first_name;
     private $last_name;
     private $email;
-    protected $_required_attributes = array("first_name", "last_name", "email");
+    private $phone1;
+    protected $_required_attributes = array("first_name", "last_name", "email", "phone1");
 
     /**
      * @return mixed
@@ -69,6 +70,24 @@ class User extends \Model {
     {
         $this->email = $email;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone1()
+    {
+        return $this->phone1;
+    }
+
+    /**
+     * @param mixed $phone1
+     */
+    public function setPhone1($phone1)
+    {
+        $this->phone1 = $phone1;
+    }
+
+    
 
 
     public function getFollowers()

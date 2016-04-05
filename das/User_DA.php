@@ -13,4 +13,18 @@ class User_DA extends \DA {
         $model = $this->hydrate_result($result);
         return $model;
     }
+
+    public function getByPhone1($phone1)
+    {
+        $stmt = "";
+        $ref = new \ReflectionClass($this);
+        $table = strtolower(str_replace("_DA", "", $ref->getName()));
+        $stmt .= "SELECT * FROM " . $table . " WHERE phone1 = ?;";
+        $values = array();
+        $values[] = array("phone1" => $phone1);
+
+        $result = $this->execute($stmt, $values);
+        $model = $this->hydrate_result($result);
+        return $model;
+    }
 }
