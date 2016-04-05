@@ -28,3 +28,4 @@ include_once("handlers/Sentiment_HANDLER.php");
 include_once("lib/Geocoder.php");
 include_once("lib/Geocoder_Adapter_Interface.php");
 include_once("lib/Geocoder_Google_Maps.php");
+include_once("lib/SMS_Twilio.php");
