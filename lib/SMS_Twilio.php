@@ -8,10 +8,8 @@ class SMS_Twilio {
 	function __construct() {
 		$ini = getProjectIni();
 		$this->api_id = $ini['sms']['api_id'];
-		error_log(print_r($this->api_id,1));
 		$this->api_token = $ini['sms']['api_token'];
 		$this->phone_number = $ini['sms']['phone_number'];
-		error_log(print_r($this->api_token,1));
 	}
 
 	public function send( $recipient, $link ) {
