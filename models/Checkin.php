@@ -6,6 +6,7 @@ class Checkin extends \Model {
     private $longitude;
     private $map_url;
     private $address;
+    private $created_at;
     protected $_required_attributes = array("user_id", "latitude", "longitude");
 
     /**
@@ -104,8 +105,28 @@ class Checkin extends \Model {
         $this->address = $address;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCreated_at()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param mixed $created_at
+     */
+    public function setCreated_at($created_at)
+    {
+        $this->created_at = $created_at;
+    }
+
+
+
     protected function model_persist_pre_hook()
     {
+        $this->setCreated_at(date("c"));
+
         $geocoder = new \Geocoder();
         if ($this->getMap_url() == null) {
             $map_url = $geocoder->getMapUrlAtLatitudeLongitude($this->getLatitude(), $this->getLongitude());
@@ -120,31 +141,42 @@ class Checkin extends \Model {
     protected function model_persist_post_hook()
     {
         $ini = getProjectIni();
+
         $user_da = new \User_DA();
+        $checkin_da = new \Checkin_DA();
+
         $checkin_user = $user_da->getById($this->getUser_id());
+        $checkins_in_last_hour = count($checkin_da->getAllInLastHour());
 
-        $transport = new \Zend\Mail\Transport\Smtp(new \Zend\Mail\Transport\SmtpOptions(array(
-            'name'              => 'smtp.gmail.com',
-            'host'              => 'smtp.gmail.com',
-            'port'              => 25,
-            'connection_class'  => 'plain',
-            'connection_config' => array(
-                'username' => $ini['email']['username'],
-                'password' => $ini['email']['password'],
-                'ssl'      => 'tls',
-            ),
-        )));
+        if ($ini['email']['enabled'] && $checkins_in_last_hour < $ini['email']['per_hour_limit']) {
+            $transport = new \Zend\Mail\Transport\Smtp(new \Zend\Mail\Transport\SmtpOptions(array(
+                'name' => 'smtp.gmail.com',
+                'host' => 'smtp.gmail.com',
+                'port' => 25,
+                'connection_class' => 'plain',
+                'connection_config' => array(
+                    'username' => $ini['email']['username'],
+                    'password' => $ini['email']['password'],
+                    'ssl' => 'tls',
+                ),
+            )));
 
-        $mail = new \Zend\Mail\Message();
-        $mail->setFrom($ini['email']['username']);
-        $mail->setSubject($this->getMailSubject($checkin_user));
-        $mail->setBody($this->getMailBody($checkin_user));
+            $mail = new \Zend\Mail\Message();
+            $mail->setFrom($ini['email']['username']);
+            $mail->setSubject($this->getMailSubject($checkin_user));
+            $mail->setBody($this->getMailBody($checkin_user));
 
-        foreach ($checkin_user->getFollowers() as $follower) {
-            $mail->addBcc($follower->getEmail());
+            foreach ($checkin_user->getFollowers() as $follower) {
+                $mail->addBcc($follower->getEmail());
+            }
+
+            $transport->send($mail);
         }
 
-        $transport->send($mail);
+        if ($ini['sms']['enabled'] && $checkins_in_last_hour < $ini['sms']['per_hour_limit']) {
+                //TODO: send SMS
+            
+        }
     }
 
     public function getMailSubject(\User $checkin_user)
