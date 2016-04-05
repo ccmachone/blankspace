@@ -12,6 +12,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
         throw new \Exception("Method " . $_SERVER['REQUEST_METHOD'] . " is not implemented for Checkin");
         break;
 }
-header("Content-type: application/json");
+send_headers();
 echo json_encode($result);
 die();

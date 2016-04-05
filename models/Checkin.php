@@ -119,7 +119,37 @@ class Checkin extends \Model {
 
     protected function model_persist_post_hook()
     {
-        //TODO: send an email
+        $ini = getProjectIni();
+        $user_da = new \User_DA();
+        $checkin_user = $user_da->getById($this->getUser_id());
+
+        $transport = new \Zend\Mail\Transport\Smtp(new \Zend\Mail\Transport\SmtpOptions(array(
+            'name'              => 'smtp.gmail.com',
+            'host'              => 'smtp.gmail.com',
+            'port'              => 25,
+            'connection_class'  => 'plain',
+            'connection_config' => array(
+                'username' => $ini['email']['username'],
+                'password' => $ini['email']['password'],
+                'ssl'      => 'tls',
+            ),
+        )));
+
+        $mail = new \Zend\Mail\Message();
+        $mail->setFrom($ini['email']['username']);
+        $mail->setSubject($this->getMailSubject($checkin_user));
+        $mail->setBody($this->getMailBody($checkin_user));
+
+        foreach ($checkin_user->getFollowers() as $follower) {
+            $mail->addBcc($follower->getEmail());
+        }
+
+        $transport->send($mail);
+    }
+
+    public function getMailSubject(\User $checkin_user)
+    {
+        return "New BlankSpace checkin for " . $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . "!";
     }
 
     public function getMailBody(\User $checkin_user)
