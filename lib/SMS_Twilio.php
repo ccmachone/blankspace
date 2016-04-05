@@ -1,12 +1,6 @@
 <?php
- 
-include_once("../../vendor/twilio/sdk/Services/Twilio.php");
- 
-/**
-* 
-*/
 class SMS_Twilio {
-	
+
 	private $api_id;
 	private $api_token;
 	private $phone_number;
@@ -16,7 +10,7 @@ class SMS_Twilio {
 		$this->api_id = $ini['sms']['api_id'];
 		error_log(print_r($this->api_id,1));
 		$this->api_token = $ini['sms']['api_token'];
-		$this->phone_number = $ini['sms']['phone_number'];			
+		$this->phone_number = $ini['sms']['phone_number'];
 		error_log(print_r($this->api_token,1));
 	}
 
@@ -38,5 +32,4 @@ class SMS_Twilio {
 }
 
 
- 
- 
+
