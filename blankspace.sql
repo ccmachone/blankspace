@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4529
+# Version 4541
 #
 # http://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
 # Host: 192.168.20.10 (MySQL 5.5.47-0ubuntu0.14.04.1)
 # Database: blankspace
-# Generation Time: 2016-04-02 21:13:48 +0000
+# Generation Time: 2016-04-05 02:40:26 +0000
 # ************************************************************
 
 
@@ -32,6 +32,7 @@ CREATE TABLE `checkin` (
   `longitude` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `map_url` text COLLATE utf8_unicode_ci,
   `address` text COLLATE utf8_unicode_ci,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -67,6 +68,22 @@ CREATE TABLE `geocode_log` (
   `geocoder` varchar(255) DEFAULT NULL,
   `source_ip` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table sentiment
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `sentiment`;
+
+CREATE TABLE `sentiment` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `checkin_id` int(11) NOT NULL,
+  `does_care` tinyint(4) NOT NULL,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
