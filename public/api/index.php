@@ -1,8 +1,8 @@
 <?php
 include_once("../../classes.php");
 
-$sms = new SMS_Twilio();
-$sms->send("304-615-1750", "http://google.com");
+// $sms = new SMS_Twilio();
+// $sms->send("304-615-1750", "http://google.com");
 
 
 //echo "heree";

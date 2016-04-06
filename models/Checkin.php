@@ -1,4 +1,5 @@
 <?php
+
 class Checkin extends \Model {
     private $id;
     private $user_id;
@@ -174,7 +175,14 @@ class Checkin extends \Model {
         }
 
         if ($ini['sms']['enabled'] && $checkins_in_last_hour < $ini['sms']['per_hour_limit']) {
-                //TODO: send SMS
+                $sms = new SMS_Twilio();
+                foreach ($checkin_user->getFollowers() as $follower) {
+                    $phone_number = $follower->getPhone1();
+                    $phone_number = "304-615-1750"; // set to Nick's for testing
+                    $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
+                    $sms->send($phone_number, $message);
+                }
+
             
         }
     }
@@ -191,7 +199,4 @@ class Checkin extends \Model {
         $message .= "Thanks for using BlankSpace!";
         return $message;
     }
-
-
-
 }
