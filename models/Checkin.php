@@ -144,9 +144,15 @@ class Checkin extends \Model {
 
         $user_da = new \User_DA();
         $checkin_da = new \Checkin_DA();
+        $follow_da = new \Follow_DA();
 
         $checkin_user = $user_da->getById($this->getUser_id());
         $checkins_in_last_hour = count($checkin_da->getAllInLastHour());
+        $follows = $follow_da->getByFollowingId($checkin_user->getId());
+        $followers = array();
+        foreach ($follows as $follow) {
+            $followers[] = $user_da->getById($follow->getUser_id());
+        }
 
         if ($ini['email']['enabled'] && $checkins_in_last_hour < $ini['email']['per_hour_limit']) {
             $transport = new \Zend\Mail\Transport\Smtp(new \Zend\Mail\Transport\SmtpOptions(array(
@@ -166,7 +172,7 @@ class Checkin extends \Model {
             $mail->setSubject($this->getMailSubject($checkin_user));
             $mail->setBody($this->getMailBody($checkin_user));
 
-            foreach ($checkin_user->getFollowers() as $follower) {
+            foreach ($followers as $follower) {
                 $mail->addBcc($follower->getEmail());
             }
 
@@ -174,15 +180,13 @@ class Checkin extends \Model {
         }
 
         if ($ini['sms']['enabled'] && $checkins_in_last_hour < $ini['sms']['per_hour_limit']) {
-                $sms = new SMS_Twilio();
-                foreach ($checkin_user->getFollowers() as $follower) {
-                    $phone_number = $follower->getPhone1();
-                    $phone_number = "304-615-1750"; // set to Nick's for testing
-                    $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
-                    $sms->send($phone_number, $message);
-                }
-
-            
+            $sms = new SMS_Twilio();
+            foreach ($followers as $follower) {
+                $phone_number = $follower->getPhone1();
+                $phone_number = "304-615-1750"; // set to Nick's for testing
+                $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
+                $sms->send($phone_number, $message);
+            }
         }
     }
 

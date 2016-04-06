@@ -42,6 +42,9 @@ class Follow_DA extends \DA {
 
         $result = $this->execute($stmt, $values);
         $models = $this->hydrate_result($result);
+        if (!is_array($models)) {
+            $models = array($models);
+        }
         return $models;
     }
 }
