@@ -1,5 +1,4 @@
 <?php
-
 class Checkin extends \Model {
     private $id;
     private $user_id;
