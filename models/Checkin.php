@@ -166,17 +166,16 @@ class Checkin extends \Model {
                     'ssl' => 'tls',
                 ),
             )));
+            foreach ($followers as $follower) {
 
             $mail = new \Zend\Mail\Message();
             $mail->setFrom($ini['email']['username']);
             $mail->setSubject($this->getMailSubject($checkin_user));
             $mail->setBody($this->getMailBody($checkin_user));
-
-            foreach ($followers as $follower) {
-                $mail->addBcc($follower->getEmail());
+            $mail->setTo($follower->getEmail());
+            $transport->send($mail);
             }
 
-            $transport->send($mail);
         }
 
         if ($ini['sms']['enabled'] && $checkins_in_last_hour < $ini['sms']['per_hour_limit']) {
@@ -185,6 +184,9 @@ class Checkin extends \Model {
                 $phone_number = $follower->getPhone1();
                 $phone_number = "304-615-1750"; // set to Nick's for testing
                 $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
+                $message .= "Map: " . $this->getMap_url() . "\n";
+                $message .= "I Care! " . $this->getSentimentLinkForUserSentiment($follower,1) . "\n";
+                $message .= "I Don't Care! " . $this->getSentimentLinkForUserSentiment($follower) . "\n";
                 $sms->send($phone_number, $message);
             }
         }
@@ -198,8 +200,17 @@ class Checkin extends \Model {
     public function getMailBody(\User $checkin_user)
     {
         $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in to " . $this->getAddress() . "!\n";
-        $message .= "Don't know where that is?  Find out here: " . $this->getMap_url() . "\n";
+        $message .= "Don't know where that is?  Take a look at this map and find out: " . $this->getMap_url() . "\n";
+        $message .= "Do you Care? Click here to show it: " . $this->getSentimentLinkForUserSentiment($checkin_user,1) . "\n";
+        $message .= "Don't Care? Click here to express your apathy: " . $this->getSentimentLinkForUserSentiment($checkin_user) . "\n";
         $message .= "Thanks for using BlankSpace!";
         return $message;
+    }
+
+    public function getSentimentLinkForUserSentiment(\User $user, $sentiment = 0)
+    {
+        $ini = getProjectIni();
+        $front_end_url = $ini['front_end']['url'];
+        return $front_end_url . "sentiment?user_id=" . $user->getId() . "&checkin_id=" . $this->getId() . "&does_care=" . $sentiment;
     }
 }
