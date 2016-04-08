@@ -134,8 +134,11 @@ class Sentiment extends \Model {
         }
 
         if ($ini['sms']['enabled'] && $sentiments_in_last_hour < $ini['sms']['per_hour_limit']) {
-            //TODO: send SMS
-
+            $sms = new \SMS();
+            $message = $this->getMailBody($checkin_user, $sentiment_user, $checkin);
+            foreach ($checkin_user->getFollowers() as $follower) {
+                $sms->send($follower, $message);
+            }
         }
     }
 

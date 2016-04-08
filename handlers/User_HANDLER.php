@@ -42,11 +42,14 @@ class User_HANDLER extends \Handler {
                 $errors[] = $required_attribute . " is required!";
             }
         }
+        if (isset($_POST['phone1_carrier_id'])) {
+            $obj->setPhone1_carrier_id($_POST['phone1_carrier_id']);
+        }
         $existing_obj = $da->getByEmail($params['email']);
         if ($existing_obj->getPersisted()) {
             $errors[] = "Account with specified email already exists!";
         }
-        
+
         $existing_obj = $da->getByPhone1($params['phone1']);
         if ($existing_obj->getPersisted()) {
             $errors[] = "Account with specified phone1 already exists!";

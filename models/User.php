@@ -5,6 +5,7 @@ class User extends \Model {
     private $last_name;
     private $email;
     private $phone1;
+    private $phone1_carrier_id;
     protected $_required_attributes = array("first_name", "last_name", "email", "phone1");
 
     /**
@@ -87,7 +88,23 @@ class User extends \Model {
         $this->phone1 = $phone1;
     }
 
-    
+    /**
+     * @return mixed
+     */
+    public function getPhone1_carrier_id()
+    {
+        return $this->phone1_carrier_id;
+    }
+
+    /**
+     * @param mixed $phone1_carrier_id
+     */
+    public function setPhone1_carrier_id($phone1_carrier_id)
+    {
+        $this->phone1_carrier_id = $phone1_carrier_id;
+    }
+
+
 
 
     public function getFollowers()

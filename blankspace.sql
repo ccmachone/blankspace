@@ -7,7 +7,7 @@
 #
 # Host: 192.168.20.10 (MySQL 5.5.47-0ubuntu0.14.04.1)
 # Database: blankspace
-# Generation Time: 2016-04-05 02:56:00 +0000
+# Generation Time: 2016-04-08 02:18:10 +0000
 # ************************************************************
 
 
@@ -18,6 +18,39 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table carrier
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `carrier`;
+
+CREATE TABLE `carrier` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `sms_domain` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+LOCK TABLES `carrier` WRITE;
+/*!40000 ALTER TABLE `carrier` DISABLE KEYS */;
+
+INSERT INTO `carrier` (`id`, `name`, `sms_domain`)
+VALUES
+	(1,'AT&T','txt.att.net'),
+	(2,'Verizon','vtext.com'),
+	(3,'T-Mobile','tmomail.net'),
+	(4,'Sprint','messaging.sprintpcs.com'),
+	(5,'Cricket','sms.mycricket.com'),
+	(6,'Cingular','cingularme.com'),
+	(7,'Nextel','messaging.nextel.com'),
+	(8,'Virgin Mobile','vmobl.com'),
+	(9,'Metro PCS','mymetropcs.com'),
+	(10,'Alltel','message.alltel.com'),
+	(11,'Boost Mobile','myboostmobile.com');
+
+/*!40000 ALTER TABLE `carrier` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table checkin
@@ -100,6 +133,7 @@ CREATE TABLE `user` (
   `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `phone1` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `phone1_carrier_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `phone1` (`phone1`)

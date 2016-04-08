@@ -167,27 +167,20 @@ class Checkin extends \Model {
                 ),
             )));
             foreach ($followers as $follower) {
-
-            $mail = new \Zend\Mail\Message();
-            $mail->setFrom($ini['email']['username']);
-            $mail->setSubject($this->getMailSubject($checkin_user));
-            $mail->setBody($this->getMailBody($checkin_user));
-            $mail->setTo($follower->getEmail());
-            $transport->send($mail);
+                $mail = new \Zend\Mail\Message();
+                $mail->setFrom($ini['email']['username']);
+                $mail->setSubject($this->getMailSubject($checkin_user));
+                $mail->setBody($this->getMailBody($checkin_user));
+                $mail->setTo($follower->getEmail());
+                $transport->send($mail);
             }
 
         }
 
         if ($ini['sms']['enabled'] && $checkins_in_last_hour < $ini['sms']['per_hour_limit']) {
-            $sms = new SMS_Twilio();
+            $sms = new \SMS();
             foreach ($followers as $follower) {
-                $phone_number = $follower->getPhone1();
-                $phone_number = "304-615-1750"; // set to Nick's for testing
-                $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
-                $message .= "Map: " . $this->getMap_url() . "\n";
-                $message .= "I Care! " . $this->getSentimentLinkForUserSentiment($follower,1) . "\n";
-                $message .= "I Don't Care! " . $this->getSentimentLinkForUserSentiment($follower) . "\n";
-                $sms->send($phone_number, $message);
+                $sms->send($follower, $this->getSmsBody($checkin_user, $follower));
             }
         }
     }
@@ -212,5 +205,14 @@ class Checkin extends \Model {
         $ini = getProjectIni();
         $front_end_url = $ini['front_end']['url'];
         return $front_end_url . "sentiment?user_id=" . $user->getId() . "&checkin_id=" . $this->getId() . "&does_care=" . $sentiment;
+    }
+
+    public function getSmsBody(\User $checkin_user, \User $follower)
+    {
+        $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in at " . $this->getAddress() . "!\n";
+        $message .= "Map: " . $this->getMap_url() . "\n";
+        $message .= "I Care! " . $this->getSentimentLinkForUserSentiment($follower,1) . "\n";
+        $message .= "I Don't Care! " . $this->getSentimentLinkForUserSentiment($follower) . "\n";
+        return $message;
     }
 }
