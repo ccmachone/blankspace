@@ -170,7 +170,7 @@ class Checkin extends \Model {
                 $mail = new \Zend\Mail\Message();
                 $mail->setFrom($ini['email']['username']);
                 $mail->setSubject($this->getMailSubject($checkin_user));
-                $mail->setBody($this->getMailBody($checkin_user));
+                $mail->setBody($this->getMailBody($checkin_user, $follower));
                 $mail->setTo($follower->getEmail());
                 $transport->send($mail);
             }
@@ -190,12 +190,12 @@ class Checkin extends \Model {
         return "New BlankSpace checkin for " . $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . "!";
     }
 
-    public function getMailBody(\User $checkin_user)
+    public function getMailBody(\User $checkin_user, \User $follower)
     {
         $message = $checkin_user->getFirst_name() . " " . $checkin_user->getLast_name() . " just checked in to " . $this->getAddress() . "!\n";
         $message .= "Don't know where that is?  Take a look at this map and find out: " . $this->getMap_url() . "\n";
-        $message .= "Do you Care? Click here to show it: " . $this->getSentimentLinkForUserSentiment($checkin_user,1) . "\n";
-        $message .= "Don't Care? Click here to express your apathy: " . $this->getSentimentLinkForUserSentiment($checkin_user) . "\n";
+        $message .= "Do you Care? Click here to show it: " . $this->getSentimentLinkForUserSentiment($follower,1) . "\n";
+        $message .= "Don't Care? Click here to express your apathy: " . $this->getSentimentLinkForUserSentiment($follower) . "\n";
         $message .= "Thanks for using BlankSpace!";
         return $message;
     }
